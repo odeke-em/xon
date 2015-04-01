@@ -1,8 +1,8 @@
 package main
 
 import (
-    "fmt"
-    "os"
+	"fmt"
+	"os"
 )
 
 func commonPrefix(values ...string) string {
@@ -48,9 +48,9 @@ func commonPrefix(values ...string) string {
 }
 
 func main() {
-    rest := os.Args[1:]
-    cprefix := commonPrefix(rest...)
-    if cprefix != "" {
-        fmt.Println(cprefix)
-    }
+	rest := os.Args[1:]
+	cprefix := commonPrefix(rest...)
+	if cprefix != "" {
+		fmt.Println(cprefix)
+	}
 }
