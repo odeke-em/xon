@@ -2,6 +2,7 @@ package pkger
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -13,12 +14,17 @@ var prettyGitHashGetArgs = []string{"log", "-n", "1", "--pretty=format:'%H'"}
 type PkgInfo struct {
 	CommitHash string
 	GoVersion  string
-	OsVersion  string
+	OsInfo     string
 }
 
 func (p *PkgInfo) String() string {
-	return fmt.Sprintf("Commit Hash: %s\nOS Version: %s\nGo Version: %s",
-		p.CommitHash, p.OsVersion, p.GoVersion)
+	return fmt.Sprintf("Commit Hash: %s\nGo Version: %s\nOS: %s",
+		p.CommitHash, p.GoVersion, p.OsInfo)
+}
+
+func goSrcify(p string) string {
+	goPath := os.Getenv("GOPATH")
+	return filepath.Join(goPath, "src", p)
 }
 
 func Recon(pkgPath string) (pkgInfo *PkgInfo, err error) {
@@ -30,9 +36,7 @@ func Recon(pkgPath string) (pkgInfo *PkgInfo, err error) {
 		return
 	}
 
-	if pkgPathAbs, err = filepath.Abs(pkgPath); err != nil {
-		return
-	}
+	pkgPathAbs = goSrcify(pkgPath)
 
 	args := []string{gitProgPath}
 	args = append(args, prettyGitHashGetArgs...)
@@ -50,7 +54,7 @@ func Recon(pkgPath string) (pkgInfo *PkgInfo, err error) {
 
 	pkgInfo = &PkgInfo{
 		CommitHash: string(output),
-		OsVersion:  strings.Join([]string{runtime.GOOS, runtime.GOARCH}, " "),
+		OsInfo:     strings.Join([]string{runtime.GOOS, runtime.GOARCH}, "/"),
 		GoVersion:  runtime.Version(),
 	}
 
