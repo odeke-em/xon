@@ -27,6 +27,8 @@ func goSrcify(p string) string {
 	return filepath.Join(goPath, "src", p)
 }
 
+var GoSrcify = goSrcify
+
 func Recon(pkgPath string) (pkgInfo *PkgInfo, err error) {
 	var gitProgPath, pkgPathAbs string
 
